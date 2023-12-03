@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -10,16 +11,24 @@ import (
 )
 
 func main() {
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run () error {
 	c, err := Load()
 		if err != nil {
-		panic(err)
+			return err
 	}
 
 	i, err := FetchTraficAmount(c.NihonTsushinID, c.NihonTsushinPass)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	fmt.Printf("%+v\n", i)
+	return nil
 }
 
 func FetchTraficAmount(id, pass string) (int, error) {
