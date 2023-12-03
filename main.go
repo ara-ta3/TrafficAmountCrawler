@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/playwright-community/playwright-go"
+	"github.com/slack-go/slack"
 	"github.com/spf13/viper"
 )
 
@@ -17,17 +18,26 @@ func main() {
 	}
 }
 
-func run () error {
+func run() error {
 	c, err := Load()
-		if err != nil {
-			return err
+	if err != nil {
+		return err
 	}
 
 	i, err := FetchTraficAmount(c.NihonTsushinID, c.NihonTsushinPass)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", i)
+
+	api := slack.New(c.SlackToken)
+	_, _, err = api.PostMessage(
+		c.SlackChannelID,
+		slack.MsgOptionText(fmt.Sprintf("日本通信SIMの利用データ量: %dMB", i), false),
+	)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -159,4 +169,6 @@ func Load() (config *EnvConfigs, err error) {
 type EnvConfigs struct {
 	NihonTsushinID   string `mapstructure:"NIHON_TSUSHIN_ID"`
 	NihonTsushinPass string `mapstructure:"NIHON_TSUSHIN_PASS"`
+	SlackToken       string `mapstructure:"SLACK_TOKEN"`
+	SlackChannelID   string `mapstructure:"SLACK_CHANNEL_ID"`
 }
