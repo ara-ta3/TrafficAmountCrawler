@@ -6,19 +6,20 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/golang-module/carbon/v2"
 	"github.com/playwright-community/playwright-go"
 	"github.com/slack-go/slack"
 	"github.com/spf13/viper"
 )
 
 func main() {
-	err := run()
+	err := run(carbon.Now())
 	if err != nil {
 		log.Fatal(err)
 	}
 }
 
-func run() error {
+func run(now carbon.Carbon) error {
 	c, err := LoadEnv()
 	if err != nil {
 		return err
@@ -29,10 +30,28 @@ func run() error {
 		return err
 	}
 
+	start := now.SetDay(4)
+	if now.DayOfMonth() < 4 {
+		start.SubMonth()
+	}
+	n := start.DiffInDays(now)
+	a := float64(i) / float64(n)
+	rest := int(float64(1000-i) / a)
+	end := now.AddDays(rest).ToDateString()
+
 	api := slack.New(c.SlackToken)
 	_, _, err = api.PostMessage(
 		c.SlackChannelID,
-		slack.MsgOptionText(fmt.Sprintf("日本通信SIMの利用データ量: %dMB", i), false),
+		slack.MsgOptionBlocks(
+			slack.NewSectionBlock(
+				&slack.TextBlockObject{Type: "plain_text", Text: fmt.Sprintf("日本通信SIMの利用データ量: %dMB", i)},
+				[]*slack.TextBlockObject{
+					{Type: "plain_text", Text: fmt.Sprintf("平均使用 %.1fMB(%d日)", a, n)},
+					{Type: "plain_text", Text: fmt.Sprintf("残り %d日~%s", rest, end)},
+				},
+				nil,
+			),
+		),
 	)
 	if err != nil {
 		return err
