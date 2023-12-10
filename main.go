@@ -19,7 +19,7 @@ func main() {
 }
 
 func run() error {
-	c, err := Load()
+	c, err := LoadEnv()
 	if err != nil {
 		return err
 	}
@@ -151,16 +151,17 @@ func GoToMyPage(page playwright.Page) error {
 	return fmt.Errorf("MyPage Not Found")
 }
 
-func Load() (config *EnvConfigs, err error) {
-	viper.AddConfigPath(".")
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
+func LoadEnv() (config *EnvConfigs, err error) {
+	v := viper.New()
+	v.AddConfigPath(".")
+	v.SetConfigName(".env")
+	v.SetConfigType("env")
 
-	if err := viper.ReadInConfig(); err != nil {
+	if err := v.ReadInConfig(); err != nil {
 		return nil, err
 	}
 
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := v.Unmarshal(&config); err != nil {
 		return nil, err
 	}
 	return
