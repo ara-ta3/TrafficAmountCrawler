@@ -4,7 +4,7 @@ goarm_opt=GOARM=$(GOARM)
 out=trafic_amount_crawler
 out_opt=-o $(out)
 
-setup: .env data.json
+setup: .env
 
 run: 
 	go run main.go
@@ -18,5 +18,3 @@ build_for_rapsberry_pi:
 .env: sample.env
 	cp -f $< $@
 
-data.json: sample.data.json
-	cp -f $< $@
