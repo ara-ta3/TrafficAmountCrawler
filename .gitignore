@@ -22,3 +22,4 @@ go.work
 
 .env
 trafic_amount_crawler
+data.json

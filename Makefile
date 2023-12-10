@@ -1,19 +1,22 @@
 goos_opt=GOOS=$(GOOS)
 goarch_opt=GOARCH=$(GOARCH)
+goarm_opt=GOARM=$(GOARM)
 out=trafic_amount_crawler
 out_opt=-o $(out)
 
-setup: .env
+setup: .env data.json
 
 run: 
 	go run main.go
 
 build:
-	$(goos_opt) $(goarch_opt) go build $(out_opt)
+	$(goos_opt) $(goarch_opt) $(goarm_opt) go build $(out_opt)
 
-build_for_linux:
-	$(MAKE) build GOOS=linux GOARCH=amd64 
+build_for_rapsberry_pi:
+	$(MAKE) build GOOS=linux GOARCH=arm GOARM=7
 
 .env: sample.env
 	cp -f $< $@
 
+data.json: sample.data.json
+	cp -f $< $@
