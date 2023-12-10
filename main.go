@@ -3,13 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"strconv"
-	"strings"
 
+	"github.com/ara-ta3/trafic-costs-crawler/domains"
 	"github.com/golang-module/carbon/v2"
-	"github.com/playwright-community/playwright-go"
 	"github.com/slack-go/slack"
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -20,38 +17,21 @@ func main() {
 }
 
 func run(now carbon.Carbon) error {
-	c, err := LoadEnv()
+	c, err := domains.LoadEnv()
 	if err != nil {
 		return err
 	}
 
-	i, err := FetchTraficAmount(c.NihonTsushinID, c.NihonTsushinPass)
+	i, err := domains.FetchTraficAmount(c.NihonTsushinID, c.NihonTsushinPass)
 	if err != nil {
 		return err
 	}
 
-	start := now.SetDay(4)
-	if now.DayOfMonth() < 4 {
-		start.SubMonth()
-	}
-	n := start.DiffInDays(now)
-	a := float64(i) / float64(n)
-	rest := int(float64(1000-i) / a)
-	end := now.AddDays(rest).ToDateString()
-
-	api := slack.New(c.SlackToken)
-	_, _, err = api.PostMessage(
+	a := domains.CalculateAmount(now, i)
+	err = PostMessage(
+		c.SlackToken,
 		c.SlackChannelID,
-		slack.MsgOptionBlocks(
-			slack.NewSectionBlock(
-				&slack.TextBlockObject{Type: "plain_text", Text: fmt.Sprintf("日本通信SIMの利用データ量: %dMB", i)},
-				[]*slack.TextBlockObject{
-					{Type: "plain_text", Text: fmt.Sprintf("平均使用 %.1fMB(%d日)", a, n)},
-					{Type: "plain_text", Text: fmt.Sprintf("残り %d日~%s", rest, end)},
-				},
-				nil,
-			),
-		),
+		a,
 	)
 	if err != nil {
 		return err
@@ -60,135 +40,20 @@ func run(now carbon.Carbon) error {
 	return nil
 }
 
-func FetchTraficAmount(id, pass string) (int, error) {
-	runOption := &playwright.RunOptions{
-		SkipInstallBrowsers: true,
-	}
-
-	err := playwright.Install(runOption)
-	if err != nil {
-		return 0, fmt.Errorf("playwright install failed: %v", err)
-	}
-
-	pw, err := playwright.Run()
-	if err != nil {
-		return 0, fmt.Errorf("playwright run failed: %v", err)
-	}
-
-	option := playwright.BrowserTypeLaunchOptions{
-		Channel: playwright.String("chrome"),
-	}
-
-	browser, err := pw.Chromium.Launch(option)
-	if err != nil {
-		return 0, fmt.Errorf("playwright launch failed: %v", err)
-	}
-	defer browser.Close()
-
-	page, err := browser.NewPage()
-	defer page.Close()
-	if err != nil {
-		return 0, fmt.Errorf("playwright new page failed: %v", err)
-	}
-
-	if err = GoToMyPage(page); err != nil {
-		return 0, err
-	}
-	page.Goto(page.URL())
-
-	if err = Login(page, id, pass); err != nil {
-		return 0, err
-	}
-	page.Goto(page.URL())
-
-	return FindAcount(page)
-}
-
-func FindAcount(page playwright.Page) (int, error) {
-	entries, err := page.Locator("dl.mdesign > dd > span").All()
-	if err != nil {
-		return 0, fmt.Errorf("locator failed: %v", err)
-	}
-	for _, entry := range entries {
-		t, _ := entry.InnerText()
-		if strings.Contains(t, "高速通信") && strings.Contains(t, "MB") {
-			x := strings.TrimSpace(strings.ReplaceAll(
-				strings.ReplaceAll(t, "MB", ""), "高速通信", ""))
-			i, e := strconv.Atoi(x)
-			if e != nil {
-				return 0, e
-			}
-			return i, nil
-		}
-	}
-	return 0, nil
-}
-
-func Login(page playwright.Page, id, pass string) error {
-	entries, err := page.Locator("input").All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
-	}
-
-	for _, entry := range entries {
-		n, _ := entry.GetAttribute("name")
-		if n == "josso_username" {
-			entry.Fill(id)
-		}
-		if n == "josso_password" {
-			entry.Fill(pass)
-		}
-	}
-	ss, err := page.Locator("input[type=submit]").First().All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
-	}
-
-	for _, entry := range ss {
-		entry.Click()
-	}
-	return nil
-}
-
-func GoToMyPage(page playwright.Page) error {
-	if _, err := page.Goto(" https://www.nihontsushin.com/"); err != nil {
-		return fmt.Errorf("playwright goto failed: %v", err)
-	}
-
-	entries, err := page.Locator("a").All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
-	}
-
-	for _, entry := range entries {
-		t, _ := entry.InnerText()
-		if t == "マイページ" {
-			entry.Click()
-			return nil
-		}
-	}
-	return fmt.Errorf("MyPage Not Found")
-}
-
-func LoadEnv() (config *EnvConfigs, err error) {
-	v := viper.New()
-	v.AddConfigPath(".")
-	v.SetConfigName(".env")
-	v.SetConfigType("env")
-
-	if err := v.ReadInConfig(); err != nil {
-		return nil, err
-	}
-
-	if err := v.Unmarshal(&config); err != nil {
-		return nil, err
-	}
-	return
-}
-
-type EnvConfigs struct {
-	NihonTsushinID   string `mapstructure:"NIHON_TSUSHIN_ID"`
-	NihonTsushinPass string `mapstructure:"NIHON_TSUSHIN_PASS"`
-	SlackToken       string `mapstructure:"SLACK_TOKEN"`
-	SlackChannelID   string `mapstructure:"SLACK_CHANNEL_ID"`
+func PostMessage(token, slackChannelID string, a domains.Amount) error {
+	api := slack.New(token)
+	_, _, err := api.PostMessage(
+		slackChannelID,
+		slack.MsgOptionBlocks(
+			slack.NewSectionBlock(
+				&slack.TextBlockObject{Type: "plain_text", Text: fmt.Sprintf("日本通信SIMの利用データ量: %dMB", a.CurrentAmount)},
+				[]*slack.TextBlockObject{
+					{Type: "plain_text", Text: fmt.Sprintf("平均使用 %.1fMB(%d日)", a.Average, a.CurrentDays)},
+					{Type: "plain_text", Text: fmt.Sprintf("残り %d日~%s", a.RestDays, a.ExpectedEndDate)},
+				},
+				nil,
+			),
+		),
+	)
+	return err
 }
