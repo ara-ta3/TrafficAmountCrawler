@@ -26,7 +26,7 @@ func (s SlackAPI) Send(a Amount) error {
 		m1 = fmt.Sprintf("平均使用 %.1fMB(%d日)", a.Average, a.CurrentDays)
 		m2 = fmt.Sprintf("残り %d日~%s", a.RestDays, a.ExpectedEnd.ToDateString())
 	} else {
-		v := float64(a.CurrentAmount) / float64(a.RestDaysUntilEnd)
+		v := float64(MAX_AMOUNT-a.CurrentAmount) / float64(a.RestDaysUntilEnd)
 		m1 = fmt.Sprintf("平均使用可能量 %.1fMB(%d日)", v, a.RestDaysUntilEnd)
 		m2 = fmt.Sprintf("残り %d日~%s", a.RestDaysUntilEnd, a.End.ToDateString())
 	}

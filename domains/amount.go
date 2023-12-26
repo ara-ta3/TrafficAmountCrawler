@@ -4,6 +4,8 @@ import "github.com/golang-module/carbon/v2"
 
 const START_DAY_OF_MONTH = 4
 
+const MAX_AMOUNT = 1000
+
 func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
 	start := now.SetDay(START_DAY_OF_MONTH)
 	if now.DayOfMonth() < START_DAY_OF_MONTH {
@@ -14,7 +16,7 @@ func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
 
 	n := start.DiffInDays(now)
 	a := float64(currentAmount) / float64(n)
-	rest := int(float64(1000-currentAmount) / a)
+	rest := int(float64(MAX_AMOUNT-currentAmount) / a)
 	traficEnd := now.AddDays(rest)
 	return Amount{
 		CurrentAmount:    currentAmount,
