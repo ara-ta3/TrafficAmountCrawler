@@ -11,7 +11,7 @@ func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
 	if now.DayOfMonth() < START_DAY_OF_MONTH {
 		begin = begin.SubMonth()
 	}
-	end := begin.AddMonth()
+	end := begin.AddMonth().SubDay()
 	return Amount{
 		Period: Period{
 			Begin: begin,
