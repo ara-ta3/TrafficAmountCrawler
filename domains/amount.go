@@ -7,38 +7,56 @@ const START_DAY_OF_MONTH = 4
 const MAX_AMOUNT = 1000
 
 func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
-	start := now.SetDay(START_DAY_OF_MONTH)
+	begin := now.SetDay(START_DAY_OF_MONTH)
 	if now.DayOfMonth() < START_DAY_OF_MONTH {
-		start = start.SubMonth()
+		begin = begin.SubMonth()
 	}
-	end := start.AddMonth()
-	restUntilEnd := now.DiffInDays(end)
-
-	n := start.DiffInDays(now)
-	a := float64(currentAmount) / float64(n)
-	rest := int(float64(MAX_AMOUNT-currentAmount) / a)
-	traficEnd := now.AddDays(rest)
+	end := begin.AddMonth()
 	return Amount{
-		CurrentAmount:    currentAmount,
-		CurrentDays:      n,
-		Average:          a,
-		RestDaysUntilEnd: restUntilEnd,
-		End:              end,
-		RestDays:         rest,
-		ExpectedEnd:      traficEnd,
+		Period: Period{
+			Begin: begin,
+			End:   end,
+		},
+		CurrentAmount: currentAmount,
+		CurrentDate:   now,
 	}
+}
+
+type Period struct {
+	Begin carbon.Carbon
+	End   carbon.Carbon
 }
 
 type Amount struct {
-	CurrentAmount    int
-	CurrentDays      int64
-	Average          float64
-	RestDaysUntilEnd int64
-	End              carbon.Carbon
-	RestDays         int
-	ExpectedEnd      carbon.Carbon
+	Period        Period
+	CurrentAmount int
+	CurrentDate   carbon.Carbon
 }
 
-func (a Amount) ExpireByTheLastDay() bool {
-	return a.ExpectedEnd.Lt(a.End)
+func (a Amount) UsedDays() int64 {
+	return a.Period.Begin.DiffInDays(a.CurrentDate)
+}
+
+func (a Amount) AverageUsedAmount() float64 {
+	return float64(a.CurrentAmount) / float64(a.UsedDays())
+}
+
+func (a Amount) RestAmount() int64 {
+	return int64(MAX_AMOUNT - a.CurrentAmount)
+}
+
+func (a Amount) RestDays() int64 {
+	return a.CurrentDate.DiffInDays(a.Period.End)
+}
+
+func (a Amount) AverageRestAmount() float64 {
+	return float64(a.RestAmount()) / float64(a.RestDays())
+}
+
+func (a Amount) ExpectedRestDays() int64 {
+	return a.RestAmount() / int64(a.AverageUsedAmount())
+}
+
+func (a Amount) ExpectedEndDate() carbon.Carbon {
+	return a.CurrentDate.AddDays(int(a.ExpectedRestDays()))
 }

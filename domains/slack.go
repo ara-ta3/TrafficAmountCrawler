@@ -20,24 +20,16 @@ func NewSlackAPI(token, slackChannelID string) SlackAPI {
 
 func (s SlackAPI) Send(a Amount) error {
 	t := fmt.Sprintf("日本通信SIMの利用データ量: %dMB", a.CurrentAmount)
-	m1 := ""
-	m2 := ""
-	if a.ExpireByTheLastDay() {
-		m1 = fmt.Sprintf("平均使用 %.1fMB(%d日)", a.Average, a.CurrentDays)
-		m2 = fmt.Sprintf("残り %d日~%s", a.RestDays, a.ExpectedEnd.ToDateString())
-	} else {
-		v := float64(MAX_AMOUNT-a.CurrentAmount) / float64(a.RestDaysUntilEnd)
-		m1 = fmt.Sprintf("平均使用可能量 %.1fMB(%d日)", v, a.RestDaysUntilEnd)
-		m2 = fmt.Sprintf("残り %d日~%s", a.RestDaysUntilEnd, a.End.ToDateString())
-	}
 	_, _, err := s.api.PostMessage(
 		s.slackChannelID,
 		slack.MsgOptionBlocks(
 			slack.NewSectionBlock(
 				&slack.TextBlockObject{Type: "plain_text", Text: t},
 				[]*slack.TextBlockObject{
-					{Type: "plain_text", Text: m1},
-					{Type: "plain_text", Text: m2},
+					{Type: "plain_text", Text: fmt.Sprintf("平均使用 %.1fMB(%d日)", a.AverageUsedAmount(), a.UsedDays())},
+					{Type: "plain_text", Text: fmt.Sprintf("残り %d日~%s", a.ExpectedRestDays(), a.ExpectedEndDate().ToDateString())},
+					{Type: "plain_text", Text: fmt.Sprintf("使用可能量 %dfMB(平均 %.1fMB)", a.RestAmount(), a.AverageRestAmount())},
+					{Type: "plain_text", Text: fmt.Sprintf("残り %d日", a.RestDays())},
 				},
 				nil,
 			),
