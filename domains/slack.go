@@ -28,7 +28,7 @@ func (s SlackAPI) Send(a Amount) error {
 				[]*slack.TextBlockObject{
 					{Type: "plain_text", Text: fmt.Sprintf("平均使用 %.1fMB(%d日)", a.AverageUsedAmount(), a.UsedDays())},
 					{Type: "plain_text", Text: fmt.Sprintf("残り %d日~%s", a.ExpectedRestDays(), a.ExpectedEndDate().ToDateString())},
-					{Type: "plain_text", Text: fmt.Sprintf("使用可能量 %dfMB(平均 %.1fMB)", a.RestAmount(), a.AverageRestAmount())},
+					{Type: "plain_text", Text: fmt.Sprintf("使用可能量 %dMB(平均 %.1fMB)", a.RestAmount(), a.AverageRestAmount())},
 					{Type: "plain_text", Text: fmt.Sprintf("残り %d日", a.RestDays())},
 				},
 				nil,
