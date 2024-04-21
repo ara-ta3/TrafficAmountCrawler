@@ -21,5 +21,5 @@
 go.work
 
 .env
-trafic_amount_crawler
+traffic_amount_crawler
 data.json

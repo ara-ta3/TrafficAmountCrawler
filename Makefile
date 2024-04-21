@@ -1,7 +1,7 @@
 goos_opt=GOOS=$(GOOS)
 goarch_opt=GOARCH=$(GOARCH)
 goarm_opt=GOARM=$(GOARM)
-out=trafic_amount_crawler
+out=traffic_amount_crawler
 out_opt=-o $(out)
 
 setup: .env
