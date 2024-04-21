@@ -1,0 +1,30 @@
+name: Go CI
+
+on:
+  push:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: setup go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: Build
+      run: make build
+
+    - name: Check formatting
+      run: |
+        unformatted=$(go fmt ./...)
+        if [ -n "$unformatted" ]; then
+          echo "go fmt resut: "
+          echo "$unformatted"
+          exit 1
+        fi
+
