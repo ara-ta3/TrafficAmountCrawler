@@ -19,4 +19,4 @@ build_for_rapsberry_pi:
 	cp -f $< $@
 
 renovate:
-	npx --yes --package renovate -- renovate-config-validator ./renovate.json
+	npx --yes --package renovate -- renovate-config-validator --strict ./renovate.json 
