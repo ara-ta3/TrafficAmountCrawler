@@ -18,3 +18,5 @@ build_for_rapsberry_pi:
 .env: sample.env
 	cp -f $< $@
 
+renovate:
+	npx --yes --package renovate -- renovate-config-validator ./renovate.json
