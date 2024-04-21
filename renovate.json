@@ -7,8 +7,8 @@
         {
             "automerge": true,
             "automergeType": "pr",
-            "managers": ["gomod"],
-            "packagePatterns": ["*"],
+            "matchManagers": ["gomod"],
+            "matchPackagePatterns": ["*"],
             "schedule": ["at any time"],
             "groupName": "all go modules"
         }
