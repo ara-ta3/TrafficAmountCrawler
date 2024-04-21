@@ -7,6 +7,13 @@
         {
             "automerge": true,
             "automergeType": "pr",
+            "datasources": ["github-releases", "github-tags"],
+            "packagePatterns": ["^actions\\/"],
+            "groupName": "github actions"
+        },
+        {
+            "automerge": true,
+            "automergeType": "pr",
             "matchManagers": ["gomod"],
             "matchPackagePatterns": ["*"],
             "schedule": ["at any time"],
