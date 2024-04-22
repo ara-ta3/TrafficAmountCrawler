@@ -5,12 +5,12 @@
     ],
     "packageRules": [
         {
-            "automerge": true,
-            "automergeType": "pr",
-            "datasources": ["github-releases", "github-tags"],
-            "packagePatterns": ["^actions\\/"],
-            "groupName": "github actions"
-        },
+             "automerge": true,
+             "automergeType": "pr",
+             "matchDatasources": ["github-releases", "github-tags"],
+             "matchPackagePatterns": ["^actions\\/"],
+             "groupName": "github actions"
+           },
         {
             "automerge": true,
             "automergeType": "pr",
