@@ -1,4 +1,4 @@
-module github.com/ara-ta3/trafic-costs-crawler
+module trafic-costs-crawler
 
 go 1.14
 
