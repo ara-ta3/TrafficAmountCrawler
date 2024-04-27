@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
+	"traffic-costs-crawler/pkg/domains"
 
-	"github.com/ara-ta3/trafic-costs-crawler/domains"
 	"github.com/golang-module/carbon/v2"
 )
 
