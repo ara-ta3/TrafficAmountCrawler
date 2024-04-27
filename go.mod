@@ -1,4 +1,4 @@
-module trafic-costs-crawler
+module traffic-costs-crawler
 
 go 1.14
 
