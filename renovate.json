@@ -1,23 +1,21 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended"
-    ],
-    "packageRules": [
-        {
-             "automerge": true,
-             "automergeType": "pr",
-             "matchDatasources": ["github-releases", "github-tags"],
-             "matchPackagePatterns": ["^actions\\/"],
-             "groupName": "github actions"
-           },
-        {
-            "automerge": true,
-            "automergeType": "pr",
-            "matchManagers": ["gomod"],
-            "matchPackagePatterns": ["*"],
-            "schedule": ["at any time"],
-            "groupName": "all go modules"
-        }
-    ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "automerge": true,
+      "automergeType": "pr",
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchPackagePatterns": ["^actions\\/"],
+      "groupName": "github actions"
+    },
+    {
+      "automerge": true,
+      "automergeType": "pr",
+      "matchManagers": ["gomod"],
+      "matchPackagePatterns": ["*"],
+      "schedule": ["at any time"],
+      "groupName": "all go modules"
+    }
+  ]
 }
