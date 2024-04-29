@@ -18,5 +18,9 @@
       "groupName": "all go modules"
     }
   ],
-  "transitiveRemediation": true
+  "transitiveRemediation": true,
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "rangeStrategy": "auto"
+  }
 }
