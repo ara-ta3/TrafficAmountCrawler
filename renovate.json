@@ -17,5 +17,6 @@
       "schedule": ["at any time"],
       "groupName": "all go modules"
     }
-  ]
+  ],
+  "transitiveRemediation": true
 }
