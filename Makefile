@@ -15,6 +15,9 @@ build:
 build_for_rapsberry_pi:
 	$(MAKE) build GOOS=linux GOARCH=arm GOARM=7
 
+test:
+	go test ./...
+
 .env: sample.env
 	cp -f $< $@
 
