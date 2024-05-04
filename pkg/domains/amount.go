@@ -38,7 +38,11 @@ func (a Amount) UsedDays() int64 {
 }
 
 func (a Amount) AverageUsedAmount() float64 {
-	return float64(a.CurrentAmount) / float64(a.UsedDays())
+	d := a.UsedDays()
+	if d == 0 {
+		return 0
+	}
+	return float64(a.CurrentAmount) / float64(d)
 }
 
 func (a Amount) RestAmount() int64 {
