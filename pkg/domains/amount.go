@@ -1,6 +1,10 @@
 package domains
 
-import "github.com/golang-module/carbon/v2"
+import (
+	"math"
+
+	"github.com/golang-module/carbon/v2"
+)
 
 const START_DAY_OF_MONTH = 4
 
@@ -57,8 +61,12 @@ func (a Amount) AverageRestAmount() float64 {
 	return float64(a.RestAmount()) / float64(a.RestDays())
 }
 
-func (a Amount) ExpectedRestDays() int64 {
-	return a.RestAmount() / int64(a.AverageUsedAmount())
+func (a Amount) ExpectedRestDays() float64 {
+	u := a.AverageUsedAmount()
+	if u == 0 {
+		return math.Inf(1)
+	}
+	return float64(a.RestAmount()) / a.AverageUsedAmount()
 }
 
 func (a Amount) ExpectedEndDate() carbon.Carbon {
