@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/golang-module/carbon/v2 v2.3.12
 	github.com/playwright-community/playwright-go v0.4201.1
-	github.com/slack-go/slack v0.12.5
+	github.com/slack-go/slack v0.13.0
 	github.com/spf13/viper v1.18.2
 )
 
