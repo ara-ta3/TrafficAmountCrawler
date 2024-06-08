@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/golang-module/carbon/v2 v2.3.12
-	github.com/playwright-community/playwright-go v0.4201.1
+	github.com/playwright-community/playwright-go v0.4401.0
 	github.com/slack-go/slack v0.13.0
 	github.com/spf13/viper v1.19.0
 )
@@ -27,7 +27,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
+	golang.org/x/exp v0.0.0-20240506185415-9bf2ced13842 // indirect
 	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
