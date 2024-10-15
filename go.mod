@@ -3,7 +3,7 @@ module traffic-costs-crawler
 go 1.21
 
 require (
-	github.com/golang-module/carbon/v2 v2.4.0
+	github.com/golang-module/carbon/v2 v2.4.1
 	github.com/playwright-community/playwright-go v0.4702.0
 	github.com/slack-go/slack v0.15.0
 	github.com/spf13/viper v1.19.0
