@@ -24,7 +24,9 @@ func FetchTraficAmount(id, pass string) (int, error) {
 	}
 
 	option := playwright.BrowserTypeLaunchOptions{
-		Channel: playwright.String("chrome"),
+		Channel:  playwright.String("chrome"),
+		Headless: playwright.Bool(true),
+		Args:     []string{"--headless=new"},
 	}
 
 	browser, err := pw.Chromium.Launch(option)
