@@ -4,7 +4,7 @@ import (
 	"log"
 	"traffic-costs-crawler/pkg/domains"
 
-	"github.com/golang-module/carbon/v2"
+	"github.com/dromara/carbon/v2"
 )
 
 func main() {

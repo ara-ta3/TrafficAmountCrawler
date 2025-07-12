@@ -3,7 +3,7 @@ package domains
 import (
 	"testing"
 
-	"github.com/golang-module/carbon/v2"
+	"github.com/dromara/carbon/v2"
 )
 
 func TestCalculateAmountRestDays(t *testing.T) {
