@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/ara-ta3/TrafficAmountCrawler/pkg/domains"
 	"log"
-	"traffic-costs-crawler/pkg/domains"
 
 	"github.com/dromara/carbon/v2"
 )
