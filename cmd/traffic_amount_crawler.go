@@ -14,7 +14,7 @@ func main() {
 	}
 }
 
-func run(now carbon.Carbon) error {
+func run(now *carbon.Carbon) error {
 	c, err := domains.LoadEnv()
 	if err != nil {
 		return err

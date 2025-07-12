@@ -10,12 +10,13 @@ const START_DAY_OF_MONTH = 4
 
 const MAX_AMOUNT = 1000
 
-func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
-	begin := now.SetDay(START_DAY_OF_MONTH)
+func CalculateAmount(now *carbon.Carbon, currentAmount int) Amount {
+	nowCopy := now.Copy()
+	begin := nowCopy.SetDay(START_DAY_OF_MONTH)
 	if now.DayOfMonth() < START_DAY_OF_MONTH {
 		begin = begin.SubMonth()
 	}
-	end := begin.AddMonth().SubDay()
+	end := begin.Copy().AddMonth().SubDay()
 	return Amount{
 		Period: Period{
 			Begin: begin,
@@ -27,14 +28,14 @@ func CalculateAmount(now carbon.Carbon, currentAmount int) Amount {
 }
 
 type Period struct {
-	Begin carbon.Carbon
-	End   carbon.Carbon
+	Begin *carbon.Carbon
+	End   *carbon.Carbon
 }
 
 type Amount struct {
 	Period        Period
 	CurrentAmount int
-	CurrentDate   carbon.Carbon
+	CurrentDate   *carbon.Carbon
 }
 
 func (a Amount) UsedDays() int64 {
@@ -69,6 +70,6 @@ func (a Amount) ExpectedRestDays() float64 {
 	return float64(a.RestAmount()) / a.AverageUsedAmount()
 }
 
-func (a Amount) ExpectedEndDate() carbon.Carbon {
+func (a Amount) ExpectedEndDate() *carbon.Carbon {
 	return a.CurrentDate.AddDays(int(a.ExpectedRestDays()))
 }
