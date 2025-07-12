@@ -1,0 +1,28 @@
+name: Scheduled Traffic Amount Crawler
+
+on:
+  schedule:
+    # 9時、12時、17時に実行 (UTC時間なので日本時間から9時間引く)
+    - cron: '0 0,3,8 * * *'
+  workflow_dispatch:
+
+jobs:
+  crawl:
+    name: run traffic amount crawler
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: setup go
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5
+        with:
+          go-version: 1.21
+
+      - name: checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: setup environment from secrets
+        run: |
+          echo "${{ secrets.ENV_FILE }}" | base64 -d > .env
+
+      - name: run crawler
+        run: make run
