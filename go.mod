@@ -6,13 +6,13 @@ toolchain go1.26.0
 
 require (
 	github.com/dromara/carbon/v2 v2.6.16
-	github.com/playwright-community/playwright-go v0.5700.0
+	github.com/playwright-community/playwright-go v0.5700.1
 	github.com/slack-go/slack v0.18.0
 	github.com/spf13/viper v1.21.0
 )
 
 require (
-	github.com/deckarep/golang-set/v2 v2.7.0 // indirect
+	github.com/deckarep/golang-set/v2 v2.8.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
