@@ -41,15 +41,17 @@ func FetchTraficAmount(id, pass string) (int, error) {
 		return 0, fmt.Errorf("playwright new page failed: %v", err)
 	}
 
-	if err = GoToMyPage(page); err != nil {
+	if err = GoToLoginPage(page); err != nil {
 		return 0, err
 	}
-	page.Goto(page.URL())
 
 	if err = Login(page, id, pass); err != nil {
 		return 0, err
 	}
-	page.Goto(page.URL())
+
+	page.WaitForLoadState(playwright.PageWaitForLoadStateOptions{
+		State: playwright.LoadStateNetworkidle,
+	})
 
 	return FindAcount(page)
 }
@@ -75,47 +77,24 @@ func FindAcount(page playwright.Page) (int, error) {
 }
 
 func Login(page playwright.Page, id, pass string) error {
-	entries, err := page.Locator("input").All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
+	if err := page.Locator("input[name=username]").Fill(id); err != nil {
+		return fmt.Errorf("fill username failed: %v", err)
 	}
-
-	for _, entry := range entries {
-		n, _ := entry.GetAttribute("name")
-		if n == "josso_username" {
-			entry.Fill(id)
-		}
-		if n == "josso_password" {
-			entry.Fill(pass)
-		}
+	if err := page.Locator("input[name=password]").Fill(pass); err != nil {
+		return fmt.Errorf("fill password failed: %v", err)
 	}
-	ss, err := page.Locator("input[type=submit]").First().All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
-	}
-
-	for _, entry := range ss {
-		entry.Click()
+	if err := page.Locator("input[type=submit]").Click(); err != nil {
+		return fmt.Errorf("click submit failed: %v", err)
 	}
 	return nil
 }
 
-func GoToMyPage(page playwright.Page) error {
-	if _, err := page.Goto(" https://www.nihontsushin.com/"); err != nil {
+func GoToLoginPage(page playwright.Page) error {
+	if _, err := page.Goto("https://mypage.bmobile.ne.jp/"); err != nil {
 		return fmt.Errorf("playwright goto failed: %v", err)
 	}
-
-	entries, err := page.Locator("a").All()
-	if err != nil {
-		return fmt.Errorf("locator failed: %v", err)
-	}
-
-	for _, entry := range entries {
-		t, _ := entry.InnerText()
-		if t == "マイページ" {
-			entry.Click()
-			return nil
-		}
-	}
-	return fmt.Errorf("MyPage Not Found")
+	page.WaitForLoadState(playwright.PageWaitForLoadStateOptions{
+		State: playwright.LoadStateNetworkidle,
+	})
+	return nil
 }
