@@ -2,7 +2,7 @@ module github.com/ara-ta3/TrafficAmountCrawler
 
 go 1.25
 
-toolchain go1.26.6
+toolchain go1.27.0
 
 require (
 	github.com/dromara/carbon/v2 v2.6.17
