@@ -1,13 +1,13 @@
 module github.com/ara-ta3/TrafficAmountCrawler
 
-go 1.25
+go 1.26
 
 toolchain go1.27.1
 
 require (
 	github.com/dromara/carbon/v2 v2.6.18
 	github.com/mxschmitt/playwright-go v0.6201.1
-	github.com/slack-go/slack v0.29.0
+	github.com/slack-go/slack v0.30.1
 	github.com/spf13/viper v1.21.0
 )
 
