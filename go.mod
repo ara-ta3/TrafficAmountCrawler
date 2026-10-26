@@ -7,7 +7,7 @@ toolchain go1.27.3
 require (
 	github.com/dromara/carbon/v2 v2.7.0
 	github.com/mxschmitt/playwright-go v0.6201.1
-	github.com/slack-go/slack v0.30.1
+	github.com/slack-go/slack v0.31.0
 	github.com/spf13/viper v1.21.0
 )
 
