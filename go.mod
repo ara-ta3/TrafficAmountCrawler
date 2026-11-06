@@ -5,7 +5,7 @@ go 1.26
 toolchain go1.27.3
 
 require (
-	github.com/dromara/carbon/v2 v2.7.0
+	github.com/dromara/carbon/v2 v2.7.1
 	github.com/mxschmitt/playwright-go v0.6401.0
 	github.com/slack-go/slack v0.35.0
 	github.com/spf13/viper v1.21.0
